@@ -16,11 +16,9 @@ class MyApp extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Text("Witaj"),
-            Text('w Fluterze'),
-            Greeting(name: "Adrain"),
-            Greeting(name: "Ania"),
-            Greeting(name: "Brian"),
+            ProfileCard(name: "Adrain", age: 12, city: "Warsaw",),
+            ProfileCard(name: "Brian", age: 25, city: "Berlin"),
+            ProfileCard(name: "Crow", age: 16),
             Row(
               children: [
                 Icon(Icons.star),
@@ -34,14 +32,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Greeting extends StatelessWidget {
-  const Greeting({super.key, required this.name});
+class ProfileCard extends StatelessWidget {
+  const ProfileCard({super.key, required this.name, required this.age, this.city = "unknown"});
 
   final String name;
-
+  final int age;
+  final String city;
+  
   @override
   Widget build(BuildContext context) {
-    print('build: $name');
-    return Text('Cześć, $name!');
+    return Text("$name, $age lat, $city");
   }
 }
