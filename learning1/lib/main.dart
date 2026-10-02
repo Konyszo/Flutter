@@ -16,13 +16,12 @@ class MyApp extends StatelessWidget {
         ),
         body: Column(
           children: [
-            ProfileCard(name: "Adrain", age: 12, city: "Warsaw",),
-            ProfileCard(name: "Brian", age: 25, city: "Berlin"),
-            ProfileCard(name: "Crow", age: 16),
             Row(
               children: [
                 Icon(Icons.star),
                 Icon(Icons.favorite),
+                CounterCard(),
+                CounterCard()
               ],
             ),
           ],
@@ -32,15 +31,44 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ProfileCard extends StatelessWidget {
-  const ProfileCard({super.key, required this.name, required this.age, this.city = "unknown"});
+class CounterCard extends StatefulWidget {
+  const CounterCard({super.key});
 
-  final String name;
-  final int age;
-  final String city;
-  
+  @override
+  State<CounterCard> createState() => _CounterCardState();
+}
+
+class _CounterCardState extends State<CounterCard> {
+  int count = 0;
+
   @override
   Widget build(BuildContext context) {
-    return Text("$name, $age lat, $city");
+    return Column(
+      children: [
+        Text('Count: $count'),
+        Row(
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  count++;
+                });
+              }, 
+              child: Text('+')
+            ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  if (count >= 1) {
+                    count--;
+                  }
+                });
+              }, 
+              child: Text('-')
+            )
+          ],
+        )
+      ],
+    );
   }
 }
