@@ -18,6 +18,9 @@ class MyApp extends StatelessWidget {
           children: [
             Text("Witaj"),
             Text('w Fluterze'),
+            Greeting(name: "Adrain"),
+            Greeting(name: "Ania"),
+            Greeting(name: "Brian"),
             Row(
               children: [
                 Icon(Icons.star),
@@ -28,5 +31,17 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class Greeting extends StatelessWidget {
+  const Greeting({super.key, required this.name});
+
+  final String name;
+
+  @override
+  Widget build(BuildContext context) {
+    print('build: $name');
+    return Text('Cześć, $name!');
   }
 }
