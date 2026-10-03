@@ -37,7 +37,12 @@ class _ProfilePageState extends State<ProfilePage> {
           width: 300,
           padding: EdgeInsets.all(16),
           decoration: BoxDecoration(
-
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.purple,
+              width: 1,
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
