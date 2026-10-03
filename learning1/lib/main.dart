@@ -47,7 +47,17 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Tu będzie profil'),
+              ClipOval(
+                child: Image.network(
+                  'https://picsum.photos/200',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(Icons.person, size: 100);
+                  },
+                ),
+              ),
             ],
           ),
         ),
