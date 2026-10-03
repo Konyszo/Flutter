@@ -10,100 +10,28 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Moja aplikacja'),
-        ),
-        body: HomePage(),
+      home: ProfilePage()
+    );
+  }
+}
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold( 
+      appBar: AppBar(
+        title: Text('Profil'),
+        actions: [
+          IconButton(onPressed: () {print('Ustawienia');}, icon: Icon(Icons.settings))
+        ]
       ),
     );
-  }
-}
-
-class LifecycleBox extends StatefulWidget {
-  const LifecycleBox({super.key});
-
-  @override
-  State<LifecycleBox> createState() => _LifecycleBoxState();
-}
-
-class _LifecycleBoxState extends State<LifecycleBox> {
-  int count = 0;
-
-  @override
-  void initState() {
-    print('initState');
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print('build');
-    return Column(
-      children: [
-        Text('Count: $count'),
-        ElevatedButton(
-          onPressed: () {
-            setState(() {
-              count++;
-            });
-          },
-          child: Text('+')
-        ),
-        const StaticLabel(text: 'A'),
-        StaticLabel(text: 'B'),
-      ],
-    );
-  }
-
-  @override
-  void dispose() {
-    print('dispose');
-    super.dispose();
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  bool showBox = true;
-
-  String buttonName(bool value) {
-    String name = value ? 'hide' : 'show';
-    return name;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        ElevatedButton(
-          onPressed: () {
-            setState(
-              () {
-                showBox = !showBox;
-              }
-            );
-          }, 
-          child: Text(buttonName(showBox))
-        ),
-        if (showBox) const LifecycleBox(),
-      ],
-    );
-  }
-}
-
-class StaticLabel extends StatelessWidget {
-  const StaticLabel({super.key, this.text = '',});
-  final String text;
-  @override
-  Widget build(BuildContext context) {
-    print('StaticLabel build: $text');
-    return Text(text);
   }
 }
