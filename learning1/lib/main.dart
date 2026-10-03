@@ -49,7 +49,9 @@ class _LifecycleBoxState extends State<LifecycleBox> {
             });
           },
           child: Text('+')
-        )
+        ),
+        const StaticLabel(text: 'A'),
+        StaticLabel(text: 'B'),
       ],
     );
   }
@@ -93,5 +95,15 @@ class _HomePageState extends State<HomePage> {
         if (showBox) const LifecycleBox(),
       ],
     );
+  }
+}
+
+class StaticLabel extends StatelessWidget {
+  const StaticLabel({super.key, this.text = '',});
+  final String text;
+  @override
+  Widget build(BuildContext context) {
+    print('StaticLabel build: $text');
+    return Text(text);
   }
 }
