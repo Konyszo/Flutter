@@ -14,60 +14,83 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('Moja aplikacja'),
         ),
-        body: Column(
-          children: [
-            Row(
-              children: [
-                Icon(Icons.star),
-                Icon(Icons.favorite),
-                CounterCard(),
-                CounterCard()
-              ],
-            ),
-          ],
-        ),
+        body: HomePage(),
       ),
     );
   }
 }
 
-class CounterCard extends StatefulWidget {
-  const CounterCard({super.key});
+class LifecycleBox extends StatefulWidget {
+  const LifecycleBox({super.key});
 
   @override
-  State<CounterCard> createState() => _CounterCardState();
+  State<LifecycleBox> createState() => _LifecycleBoxState();
 }
 
-class _CounterCardState extends State<CounterCard> {
+class _LifecycleBoxState extends State<LifecycleBox> {
   int count = 0;
 
   @override
+  void initState() {
+    print('initState');
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('build');
     return Column(
       children: [
         Text('Count: $count'),
-        Row(
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  count++;
-                });
-              }, 
-              child: Text('+')
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  if (count >= 1) {
-                    count--;
-                  }
-                });
-              }, 
-              child: Text('-')
-            )
-          ],
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              count++;
+            });
+          },
+          child: Text('+')
         )
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    print('dispose');
+    super.dispose();
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool showBox = true;
+
+  String buttonName(bool value) {
+    String name = value ? 'hide' : 'show';
+    return name;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        ElevatedButton(
+          onPressed: () {
+            setState(
+              () {
+                showBox = !showBox;
+              }
+            );
+          }, 
+          child: Text(buttonName(showBox))
+        ),
+        if (showBox) const LifecycleBox(),
       ],
     );
   }
