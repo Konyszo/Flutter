@@ -32,6 +32,21 @@ class _ProfilePageState extends State<ProfilePage> {
           IconButton(onPressed: () {print('Ustawienia');}, icon: Icon(Icons.settings))
         ]
       ),
+      body: Center(
+        child: Container(
+          width: 300,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Tu będzie profil'),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
