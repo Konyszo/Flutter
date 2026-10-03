@@ -23,6 +23,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  String name = 'Anna';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold( 
@@ -58,6 +60,28 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 ),
               ),
+              SizedBox(height: 12),
+              Text(
+                name,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.location_on),
+                  Text('Kraków'),
+                ],
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Bal bal kaobnf oianbof oaijoi boaij obn iaob oia oibn ia oian boaio iabo iua hoianso iubaoiio hfioaeg aogi goiean , aeoinbf',
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              )
             ],
           ),
         ),
