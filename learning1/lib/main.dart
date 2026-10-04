@@ -24,6 +24,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String name = 'Anna';
+  bool liked = false;
   final TextEditingController controller = TextEditingController();
 
   @override
@@ -37,6 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold( 
       appBar: AppBar(
         title: Text('Profil'),
+        backgroundColor: Colors.yellow,
         actions: [
           IconButton(onPressed: () {print('Ustawienia');}, icon: Icon(Icons.settings))
         ]
@@ -127,6 +129,14 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            liked = !liked;
+          });
+        },
+        child: liked ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
       ),
     );
   }
