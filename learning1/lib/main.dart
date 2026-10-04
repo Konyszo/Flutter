@@ -100,6 +100,27 @@ class _ProfilePageState extends State<ProfilePage> {
                   print(value);
                 },
               ),
+              SizedBox(height: 12,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        name = controller.text;
+                        controller.clear();
+                      });
+                    }, 
+                    child: Text('Save'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      controller.clear();
+                    }, 
+                    child: Text('Cancel')
+                  ),
+                ],
+              ),
             ],
           ),
         ),
