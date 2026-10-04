@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   border: OutlineInputBorder(),
                 ),
                 onChanged: (value) {
-                  print(value);
+                  setState(() {});
                 },
               ),
               SizedBox(height: 12,),
@@ -105,12 +105,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: controller.text.isEmpty ? null :
+                    () {
                       setState(() {
                         name = controller.text;
                         controller.clear();
                       });
-                    }, 
+                    },
                     child: Text('Save'),
                   ),
                   TextButton(
