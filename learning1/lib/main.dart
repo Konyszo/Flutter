@@ -116,7 +116,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   TextButton(
                     onPressed: () {
-                      controller.clear();
+                      setState(() {
+                        controller.clear();
+                      });
                     }, 
                     child: Text('Cancel')
                   ),
