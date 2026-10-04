@@ -24,6 +24,13 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String name = 'Anna';
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +88,18 @@ class _ProfilePageState extends State<ProfilePage> {
                 'Bal bal kaobnf oianbof oaijoi boaij obn iaob oia oibn ia oian boaio iabo iua hoianso iubaoiio hfioaeg aogi goiean , aeoinbf',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-              )
+              ),
+              SizedBox(height: 16,),
+              TextField(
+                controller: controller,
+                decoration: InputDecoration(
+                  labelText: 'Nowe imię',
+                  border: OutlineInputBorder(),
+                ),
+                onChanged: (value) {
+                  print(value);
+                },
+              ),
             ],
           ),
         ),
