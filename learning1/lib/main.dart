@@ -1,142 +1,22 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: CalendarPage(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class CalendarPage extends StatelessWidget {
+  CalendarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ProfilePage()
-    );
-  }
-}
-
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
-
-  @override
-  State<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends State<ProfilePage> {
-  String name = 'Anna';
-  bool liked = false;
-  final TextEditingController controller = TextEditingController();
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       appBar: AppBar(
-        title: Text('Profil'),
-        backgroundColor: Colors.yellow,
-        actions: [
-          IconButton(onPressed: () {print('Ustawienia');}, icon: Icon(Icons.settings))
-        ]
+        title: Text('Today'),
       ),
       body: Center(
-        child: Container(
-          width: 300,
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.purple,
-              width: 1,
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipOval(
-                child: Image.network(
-                  'https://picsum.photos/200',
-                  width: 100,
-                  height: 100,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(Icons.person, size: 100);
-                  },
-                ),
-              ),
-              SizedBox(height: 12),
-              Text(
-                name,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.location_on),
-                  Text('Kraków'),
-                ],
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Bal bal kaobnf oianbof oaijoi boaij obn iaob oia oibn ia oian boaio iabo iua hoianso iubaoiio hfioaeg aogi goiean , aeoinbf',
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-              SizedBox(height: 16,),
-              TextField(
-                controller: controller,
-                decoration: InputDecoration(
-                  labelText: 'Nowe imię',
-                  border: OutlineInputBorder(),
-                ),
-                onChanged: (value) {
-                  setState(() {});
-                },
-              ),
-              SizedBox(height: 12,),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: controller.text.isEmpty ? null :
-                    () {
-                      setState(() {
-                        name = controller.text;
-                        controller.clear();
-                      });
-                    },
-                    child: Text('Save'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        controller.clear();
-                      });
-                    }, 
-                    child: Text('Cancel')
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            liked = !liked;
-          });
-        },
-        child: liked ? Icon(Icons.favorite) : Icon(Icons.favorite_border),
+        child: Text('No tasks yet'),
       ),
     );
   }
