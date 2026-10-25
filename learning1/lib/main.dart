@@ -17,9 +17,10 @@ class CalendarPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          TaskRow(title: 'First'),
-          TaskRow(title: 'Second'),
-          TaskRow(title: 'Third'),
+          TaskRow(title: 'First', isDone: true,),
+          TaskRow(title: 'Second', isDone: false,),
+          TaskRow(title: 'Third', isDone: false,),
+          TaskRow(title: 'Third', isDone: true),
         ],
       ),
     );
@@ -27,17 +28,29 @@ class CalendarPage extends StatelessWidget {
 }
 
 class TaskRow extends StatelessWidget {
-  TaskRow({super.key, required this.title});
+  TaskRow({super.key, required this.title, required this.isDone});
 
   final String title;
+  final bool isDone;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.chevron_right),
-        Icon(Icons.check_box_outline_blank),
-        Text(title),
+        Icon(
+          Icons.chevron_right,
+          color: isDone ? Colors.grey : null,
+        ),
+        Icon(
+          isDone ? Icons.check_box : Icons.check_box_outline_blank,
+          color: isDone ? Colors.grey : null,
+        ),
+        Text(
+          title,
+          style: TextStyle(
+            color: isDone ? Colors.grey : null,
+          ),
+        ),
       ],
     );
   }
