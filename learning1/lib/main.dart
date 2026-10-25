@@ -16,7 +16,13 @@ class CalendarPage extends StatelessWidget {
         title: Text('Today'),
       ),
       body: Center(
-        child: Text('No tasks yet'),
+        child: Column(
+          children: [
+            Text('First'),
+            Text('Second'),
+            Text('Third'),
+          ],
+        ),
       ),
     );
   }
