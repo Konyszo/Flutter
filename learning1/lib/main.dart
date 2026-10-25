@@ -15,15 +15,30 @@ class CalendarPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Today'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            Text('First'),
-            Text('Second'),
-            Text('Third'),
-          ],
-        ),
+      body: Column(
+        children: [
+          TaskRow(title: 'First'),
+          TaskRow(title: 'Second'),
+          TaskRow(title: 'Third'),
+        ],
       ),
+    );
+  }
+}
+
+class TaskRow extends StatelessWidget {
+  TaskRow({super.key, required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(Icons.chevron_right),
+        Icon(Icons.check_box_outline_blank),
+        Text(title),
+      ],
     );
   }
 }
