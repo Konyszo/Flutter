@@ -17,7 +17,7 @@ class CalendarPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          TaskRow(title: 'First', isDone: true,),
+          TaskRow(title: 'Read 20 pages of the book about Flutter and write short notes from every chapter', isDone: true,),
           TaskRow(title: 'Second', isDone: false,),
           TaskRow(title: 'Third', isDone: false,),
           TaskRow(title: 'Third', isDone: true),
@@ -45,10 +45,14 @@ class TaskRow extends StatelessWidget {
           isDone ? Icons.check_box : Icons.check_box_outline_blank,
           color: isDone ? Colors.grey : null,
         ),
-        Text(
-          title,
-          style: TextStyle(
-            color: isDone ? Colors.grey : null,
+        Expanded(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: isDone ? Colors.grey : null,
+            ),
           ),
         ),
       ],
