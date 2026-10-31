@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 
-enum TaskStatus {
-  notDone,
-  inProgress,
-  done,
-}
+enum TaskStatus { notDone, inProgress, done }
+
+List<Task> tasks = [
+  Task(title: 'Deal with finances', status: TaskStatus.done),
+  Task(title: 'Deal with finances', status: TaskStatus.notDone),
+  Task(
+    title:
+      'very weirdly long sentence, just to test our app again, in case of way too long titles. Hope it works just fine.',
+    status: TaskStatus.notDone,
+  ),
+  Task(title: 'Help the dog', status: TaskStatus.inProgress),
+  Task(title: 'WHat r we doin', status: TaskStatus.notDone),
+];
 
 void main() {
   runApp(MaterialApp(home: CalendarPage()));
@@ -17,27 +25,15 @@ class CalendarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Today')),
-      body: Column(
-        children: [
-          TaskRow(
-            title:
-                'Read 20 pages of the book about Flutter and write short notes from every chapter',
-            status: TaskStatus.notDone,
-          ),
-          TaskRow(title: 'Second', status: TaskStatus.done),
-          TaskRow(title: 'Third', status: TaskStatus.inProgress),
-          TaskRow(title: 'Third', status: TaskStatus.done),
-        ],
-      ),
+      body: Column(children: [for (Task task in tasks) TaskRow(task: task)]),
     );
   }
 }
 
 class TaskRow extends StatefulWidget {
-  TaskRow({super.key, required this.title, required this.status});
+  TaskRow({super.key, required this.task});
 
-  final String title;
-  final TaskStatus status;
+  final Task task;
 
   @override
   State<TaskRow> createState() => _TaskRowState();
@@ -49,7 +45,7 @@ class _TaskRowState extends State<TaskRow> {
   @override
   void initState() {
     super.initState();
-    status = widget.status;
+    status = widget.task.status;
   }
 
   @override
@@ -60,27 +56,24 @@ class _TaskRowState extends State<TaskRow> {
       children: [
         Icon(Icons.chevron_right, color: isDone ? Colors.grey : null),
         IconButton(
-          icon: Icon(
-            switch (status) {
-              TaskStatus.notDone => Icons.check_box_outline_blank,
-              TaskStatus.inProgress => Icons.indeterminate_check_box,
-              TaskStatus.done => Icons.check_box,
-            },
-            color: isDone ? Colors.grey : null,
-          ),
+          icon: Icon(switch (status) {
+            TaskStatus.notDone => Icons.check_box_outline_blank,
+            TaskStatus.inProgress => Icons.indeterminate_check_box,
+            TaskStatus.done => Icons.check_box,
+          }, color: isDone ? Colors.grey : null),
           onPressed: () {
             setState(() {
               status = switch (status) {
                 TaskStatus.notDone => TaskStatus.inProgress,
                 TaskStatus.inProgress => TaskStatus.done,
-                TaskStatus.done => status = TaskStatus.notDone,
+                TaskStatus.done => TaskStatus.notDone,
               };
             });
           },
         ),
         Expanded(
           child: Text(
-            widget.title,
+            widget.task.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(color: isDone ? Colors.grey : null),
@@ -89,4 +82,11 @@ class _TaskRowState extends State<TaskRow> {
       ],
     );
   }
+}
+
+class Task {
+  Task({required this.title, required this.status});
+
+  final String title;
+  final TaskStatus status;
 }
