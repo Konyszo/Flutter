@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+enum TaskStatus {
+  notDone,
+  inProgress,
+  done,
+}
+
 void main() {
   runApp(MaterialApp(home: CalendarPage()));
 }
@@ -16,11 +22,11 @@ class CalendarPage extends StatelessWidget {
           TaskRow(
             title:
                 'Read 20 pages of the book about Flutter and write short notes from every chapter',
-            isDone: true,
+            status: TaskStatus.notDone,
           ),
-          TaskRow(title: 'Second', isDone: false),
-          TaskRow(title: 'Third', isDone: false),
-          TaskRow(title: 'Third', isDone: true),
+          TaskRow(title: 'Second', status: TaskStatus.done),
+          TaskRow(title: 'Third', status: TaskStatus.inProgress),
+          TaskRow(title: 'Third', status: TaskStatus.done),
         ],
       ),
     );
@@ -28,37 +34,47 @@ class CalendarPage extends StatelessWidget {
 }
 
 class TaskRow extends StatefulWidget {
-  TaskRow({super.key, required this.title, required this.isDone});
+  TaskRow({super.key, required this.title, required this.status});
 
   final String title;
-  final bool isDone;
+  final TaskStatus status;
 
   @override
   State<TaskRow> createState() => _TaskRowState();
 }
 
 class _TaskRowState extends State<TaskRow> {
-  bool isDone = false;
+  TaskStatus status = TaskStatus.notDone;
 
   @override
   void initState() {
     super.initState();
-    isDone = widget.isDone;
+    status = widget.status;
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isDone = status == TaskStatus.done;
+
     return Row(
       children: [
         Icon(Icons.chevron_right, color: isDone ? Colors.grey : null),
         IconButton(
           icon: Icon(
-            isDone ? Icons.check_box : Icons.check_box_outline_blank,
+            switch (status) {
+              TaskStatus.notDone => Icons.check_box_outline_blank,
+              TaskStatus.inProgress => Icons.indeterminate_check_box,
+              TaskStatus.done => Icons.check_box,
+            },
             color: isDone ? Colors.grey : null,
           ),
           onPressed: () {
             setState(() {
-              isDone = !isDone;
+              status = switch (status) {
+                TaskStatus.notDone => TaskStatus.inProgress,
+                TaskStatus.inProgress => TaskStatus.done,
+                TaskStatus.done => status = TaskStatus.notDone,
+              };
             });
           },
         ),
