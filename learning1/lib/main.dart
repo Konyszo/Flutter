@@ -2,30 +2,90 @@ import 'package:flutter/material.dart';
 
 enum TaskStatus { notDone, inProgress, done }
 
-List<Task> tasks = [
-  Task(title: 'Deal with finances', status: TaskStatus.done),
-  Task(title: 'Deal with finances', status: TaskStatus.notDone),
-  Task(
-    title:
-      'very weirdly long sentence, just to test our app again, in case of way too long titles. Hope it works just fine.',
-    status: TaskStatus.notDone,
-  ),
-  Task(title: 'Help the dog', status: TaskStatus.inProgress),
-  Task(title: 'WHat r we doin', status: TaskStatus.notDone),
-];
-
 void main() {
   runApp(MaterialApp(home: CalendarPage()));
 }
 
-class CalendarPage extends StatelessWidget {
+class CalendarPage extends StatefulWidget {
   CalendarPage({super.key});
+
+  @override
+  State<CalendarPage> createState() => _CalendarPageState();
+}
+
+class _CalendarPageState extends State<CalendarPage> {
+  List<Task> tasks = [
+    Task(title: 'Deal with finances', status: TaskStatus.done),
+    Task(title: 'Deal with finances', status: TaskStatus.notDone),
+    Task(
+      title:
+          'very weirdly long sentence, just to test our app again, in case of way too long titles. Hope it works just fine.',
+      status: TaskStatus.notDone,
+    ),
+    Task(title: 'Help the dog', status: TaskStatus.inProgress),
+    Task(title: 'WHat r we doin', status: TaskStatus.notDone),
+  ];
+
+  final TextEditingController controller = TextEditingController();
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void createTaskPopUp() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Task Creation'),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(labelText: 'your task name'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                controller.clear();
+                Navigator.pop(context);
+              }, 
+              child: Text('Cancel')
+            ),
+            TextButton(
+              onPressed: () {
+                if (controller.text.trim().isNotEmpty) {
+                  setState(() {
+                    tasks.add(
+                      Task(
+                        title: controller.text.trim(), 
+                        status: TaskStatus.notDone
+                      )
+                    );
+                  });
+                  controller.clear();
+                  Navigator.pop(context);
+                } 
+              }, 
+              child: Text('Add')
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Today')),
       body: Column(children: [for (Task task in tasks) TaskRow(task: task)]),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          createTaskPopUp();
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }
