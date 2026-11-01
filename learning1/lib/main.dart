@@ -36,12 +36,16 @@ class _CalendarPageState extends State<CalendarPage> {
     super.dispose();
   }
 
-  void createTaskPopUp() {
+  void showTaskDialog({Task? task}) {
+    if (task != null) {
+      controller.text = task.title;
+    } 
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Task Creation'),
+          title: Text(task == null ? 'Create Task' : 'Edit Task'),
           content: TextField(
             controller: controller,
             decoration: InputDecoration(labelText: 'your task name'),
@@ -52,24 +56,28 @@ class _CalendarPageState extends State<CalendarPage> {
                 controller.clear();
                 Navigator.pop(context);
               }, 
-              child: Text('Cancel')
+              child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 if (controller.text.trim().isNotEmpty) {
                   setState(() {
-                    tasks.add(
-                      Task(
-                        title: controller.text.trim(), 
-                        status: TaskStatus.notDone
-                      )
-                    );
+                    if (task == null) {
+                      tasks.add(
+                        Task(
+                          title: controller.text.trim(), 
+                          status: TaskStatus.notDone,
+                        )
+                      );
+                    } else {
+                      task.title = controller.text.trim();
+                    }
                   });
                   controller.clear();
                   Navigator.pop(context);
                 } 
               }, 
-              child: Text('Add')
+              child: Text(task == null ? 'Add' : 'Save')
             ),
           ],
         );
@@ -101,93 +109,86 @@ class _CalendarPageState extends State<CalendarPage> {
                 focusedTask = null;
               });
             },
+            onStatusTap:() {
+              setState(() {
+                task.status = switch (task.status) {
+                  TaskStatus.notDone => TaskStatus.inProgress,
+                  TaskStatus.inProgress => TaskStatus.done,
+                  TaskStatus.done => TaskStatus.notDone,
+                };
+              });
+            },
+            onEdit: () {
+              showTaskDialog(task: task);
+            },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          createTaskPopUp();
+          showTaskDialog();
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add,),
       ),
     );
   }
 }
 
-class TaskRow extends StatefulWidget {
-  TaskRow({
+class TaskRow extends StatelessWidget {
+  const TaskRow({
     super.key, 
     required this.task, 
     required this.isFocused, 
     required this.onTap, 
-    required this.onDelete
+    required this.onDelete,
+    required this.onStatusTap,
+    required this.onEdit,
   });
 
   final Task task;
   final bool isFocused;
   final VoidCallback onTap;
   final VoidCallback onDelete;
-
-  @override
-  State<TaskRow> createState() => _TaskRowState();
-}
-
-class _TaskRowState extends State<TaskRow> {
-  TaskStatus status = TaskStatus.notDone;
-
-  @override
-  void initState() {
-    super.initState();
-    status = widget.task.status;
-  }
+  final VoidCallback onStatusTap;
+  final VoidCallback onEdit;
 
   @override
   Widget build(BuildContext context) {
-    final bool isDone = status == TaskStatus.done;
+    final bool isDone = task.status == TaskStatus.done;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Container(
-        color: widget.isFocused ? Colors.blue.shade50 : null,
+        color: isFocused ? Colors.blue.shade50 : null,
         child: Row(
           children: [
             Icon(Icons.chevron_right, color: isDone ? Colors.grey : null),
             IconButton(
-              icon: Icon(switch (status) {
+              icon: Icon(switch (task.status) {
                 TaskStatus.notDone => Icons.check_box_outline_blank,
                 TaskStatus.inProgress => Icons.indeterminate_check_box,
                 TaskStatus.done => Icons.check_box,
               }, color: isDone ? Colors.grey : null),
-              onPressed: () {
-                setState(() {
-                  status = switch (status) {
-                    TaskStatus.notDone => TaskStatus.inProgress,
-                    TaskStatus.inProgress => TaskStatus.done,
-                    TaskStatus.done => TaskStatus.notDone,
-                  };
-                });
-              },
+              onPressed: onStatusTap,
             ),
             Expanded(
               child: Text(
-                widget.task.title,
+                task.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: isDone ? Colors.grey : null),
               ),
             ),
-            if (widget.isFocused) IconButton(
-              onPressed: () {
-                
-              },
+            if (isFocused) IconButton(
+              onPressed: onEdit,
               icon: Icon(
                 Icons.edit,
                 color: Colors.blue,
               ),
             ),
-            if (widget.isFocused) IconButton(
-              onPressed: widget.onDelete,
+            if (isFocused) IconButton(
+              onPressed: onDelete,
               icon: Icon(
                 Icons.delete,
                 color: Colors.red,
@@ -203,6 +204,6 @@ class _TaskRowState extends State<TaskRow> {
 class Task {
   Task({required this.title, required this.status});
 
-  final String title;
-  final TaskStatus status;
+  String title;
+  TaskStatus status;
 }
