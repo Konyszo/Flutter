@@ -79,7 +79,13 @@ class _CalendarPageState extends State<CalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Today')),
-      body: Column(children: [for (Task task in tasks) TaskRow(task: task)]),
+      body: ListView.builder(
+        padding: EdgeInsets.only(bottom: 50),
+        itemCount: tasks.length,
+        itemBuilder: (BuildContext context, int index) {
+          return TaskRow(task: tasks[index]);
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           createTaskPopUp();
