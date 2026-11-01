@@ -14,6 +14,8 @@ class CalendarPage extends StatefulWidget {
 }
 
 class _CalendarPageState extends State<CalendarPage> {
+  Task? focusedTask;
+
   List<Task> tasks = [
     Task(title: 'Deal with finances', status: TaskStatus.done),
     Task(title: 'Deal with finances', status: TaskStatus.notDone),
@@ -83,7 +85,23 @@ class _CalendarPageState extends State<CalendarPage> {
         padding: EdgeInsets.only(bottom: 50),
         itemCount: tasks.length,
         itemBuilder: (BuildContext context, int index) {
-          return TaskRow(task: tasks[index]);
+          final Task task = tasks[index];
+          return TaskRow(
+            key: ValueKey(task),
+            task: task,
+            isFocused: task == focusedTask,
+            onTap:() {
+              setState(() {
+                focusedTask = task == focusedTask ? null : task;
+              });
+            },
+            onDelete: () {
+              setState((){
+                tasks.remove(task);
+                focusedTask = null;
+              });
+            },
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -97,9 +115,18 @@ class _CalendarPageState extends State<CalendarPage> {
 }
 
 class TaskRow extends StatefulWidget {
-  TaskRow({super.key, required this.task});
+  TaskRow({
+    super.key, 
+    required this.task, 
+    required this.isFocused, 
+    required this.onTap, 
+    required this.onDelete
+  });
 
   final Task task;
+  final bool isFocused;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
 
   @override
   State<TaskRow> createState() => _TaskRowState();
@@ -118,34 +145,57 @@ class _TaskRowState extends State<TaskRow> {
   Widget build(BuildContext context) {
     final bool isDone = status == TaskStatus.done;
 
-    return Row(
-      children: [
-        Icon(Icons.chevron_right, color: isDone ? Colors.grey : null),
-        IconButton(
-          icon: Icon(switch (status) {
-            TaskStatus.notDone => Icons.check_box_outline_blank,
-            TaskStatus.inProgress => Icons.indeterminate_check_box,
-            TaskStatus.done => Icons.check_box,
-          }, color: isDone ? Colors.grey : null),
-          onPressed: () {
-            setState(() {
-              status = switch (status) {
-                TaskStatus.notDone => TaskStatus.inProgress,
-                TaskStatus.inProgress => TaskStatus.done,
-                TaskStatus.done => TaskStatus.notDone,
-              };
-            });
-          },
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: widget.onTap,
+      child: Container(
+        color: widget.isFocused ? Colors.blue.shade50 : null,
+        child: Row(
+          children: [
+            Icon(Icons.chevron_right, color: isDone ? Colors.grey : null),
+            IconButton(
+              icon: Icon(switch (status) {
+                TaskStatus.notDone => Icons.check_box_outline_blank,
+                TaskStatus.inProgress => Icons.indeterminate_check_box,
+                TaskStatus.done => Icons.check_box,
+              }, color: isDone ? Colors.grey : null),
+              onPressed: () {
+                setState(() {
+                  status = switch (status) {
+                    TaskStatus.notDone => TaskStatus.inProgress,
+                    TaskStatus.inProgress => TaskStatus.done,
+                    TaskStatus.done => TaskStatus.notDone,
+                  };
+                });
+              },
+            ),
+            Expanded(
+              child: Text(
+                widget.task.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: isDone ? Colors.grey : null),
+              ),
+            ),
+            if (widget.isFocused) IconButton(
+              onPressed: () {
+                
+              },
+              icon: Icon(
+                Icons.edit,
+                color: Colors.blue,
+              ),
+            ),
+            if (widget.isFocused) IconButton(
+              onPressed: widget.onDelete,
+              icon: Icon(
+                Icons.delete,
+                color: Colors.red,
+              ),
+            ),
+          ],
         ),
-        Expanded(
-          child: Text(
-            widget.task.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(color: isDone ? Colors.grey : null),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
