@@ -8,18 +8,22 @@ class TaskRow extends StatelessWidget {
     super.key,
     required this.task,
     required this.isFocused,
+    required this.depth,
     required this.onTap,
     required this.onDelete,
     required this.onStatusTap,
     required this.onEdit,
+    required this.onExpandTap,
   });
 
   final Task task;
   final bool isFocused;
+  final int depth;
   final VoidCallback onTap;
   final VoidCallback onDelete;
   final VoidCallback onStatusTap;
   final VoidCallback onEdit;
+  final VoidCallback onExpandTap;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +33,20 @@ class TaskRow extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Container(
+        padding: EdgeInsets.only(left: depth * 24.0),
         color: isFocused ? Colors.blue.shade50 : null,
         child: Row(
           children: [
-            Icon(Icons.chevron_right, color: isDone ? Colors.grey : null),
+            if (task.subtasks.isNotEmpty) IconButton(
+              onPressed: onExpandTap,
+              icon: Icon(
+                task.isExpanded ? Icons.expand_more : Icons.chevron_right,
+                color: isDone ? Colors.grey : null
+              ),
+            )
+            else SizedBox(
+              width: 48,
+            ),
             IconButton(
               icon: Icon(switch (task.status) {
                 TaskStatus.notDone => Icons.check_box_outline_blank,

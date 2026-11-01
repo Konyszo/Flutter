@@ -15,7 +15,21 @@ class _CalendarPageState extends State<CalendarPage> {
   Task? focusedTask;
 
   List<Task> tasks = [
-    Task(title: 'Deal with finances', status: TaskStatus.done),
+    Task(
+      title: 'Deal with finances', 
+      status: TaskStatus.done,
+      subtasks: [
+        Task(
+          title: 'Sth else',
+          status: TaskStatus.done,
+          subtasks: [
+            Task(title: 'finances', status: TaskStatus.inProgress),
+          ]
+        ),
+        Task(title: 'Deal with', status: TaskStatus.done),
+        Task(title: 'Deal', status: TaskStatus.inProgress),
+      ]
+    ),
     Task(title: 'Deal with finances', status: TaskStatus.notDone),
     Task(
       title:
@@ -32,6 +46,15 @@ class _CalendarPageState extends State<CalendarPage> {
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  void addVisibleTasks(List<Task> list, int depth, List<TaskEntry> result) {
+    for (Task task in list) {
+      result.add(TaskEntry(task: task, depth: depth, siblings: list));
+      if (task.isExpanded) {
+        addVisibleTasks(task.subtasks, depth + 1, result);
+      }
+    }
   }
 
   void showTaskDialog({Task? task}) {
@@ -85,17 +108,23 @@ class _CalendarPageState extends State<CalendarPage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<TaskEntry> entries = [];
+
+    addVisibleTasks(tasks, 0, entries);
+
     return Scaffold(
       appBar: AppBar(title: Text('Today')),
       body: ListView.builder(
         padding: EdgeInsets.only(bottom: 50),
-        itemCount: tasks.length,
+        itemCount: entries.length,
         itemBuilder: (BuildContext context, int index) {
-          final Task task = tasks[index];
+          final TaskEntry entry = entries[index];
+          final Task task = entry.task;
           return TaskRow(
             key: ValueKey(task),
             task: task,
             isFocused: task == focusedTask,
+            depth: entry.depth,
             onTap:() {
               setState(() {
                 focusedTask = task == focusedTask ? null : task;
@@ -103,7 +132,7 @@ class _CalendarPageState extends State<CalendarPage> {
             },
             onDelete: () {
               setState((){
-                tasks.remove(task);
+                entry.siblings.remove(task);
                 focusedTask = null;
               });
             },
@@ -118,6 +147,11 @@ class _CalendarPageState extends State<CalendarPage> {
             },
             onEdit: () {
               showTaskDialog(task: task);
+            },
+            onExpandTap: () {
+              setState(() {
+                task.isExpanded = !task.isExpanded;
+              });
             },
           );
         },
