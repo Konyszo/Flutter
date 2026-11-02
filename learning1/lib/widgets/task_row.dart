@@ -14,6 +14,7 @@ class TaskRow extends StatelessWidget {
     required this.onStatusTap,
     required this.onEdit,
     required this.onExpandTap,
+    required this.onAdd
   });
 
   final Task task;
@@ -24,6 +25,7 @@ class TaskRow extends StatelessWidget {
   final VoidCallback onStatusTap;
   final VoidCallback onEdit;
   final VoidCallback onExpandTap;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,11 @@ class TaskRow extends StatelessWidget {
                 style: TextStyle(color: isDone ? Colors.grey : null),
               ),
             ),
+            if (isFocused)
+              IconButton(
+                onPressed: onAdd, 
+                icon: Icon(Icons.add, color: Colors.green,)
+              ),
             if (isFocused)
               IconButton(
                 onPressed: onEdit,

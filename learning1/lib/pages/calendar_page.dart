@@ -57,16 +57,19 @@ class _CalendarPageState extends State<CalendarPage> {
     }
   }
 
-  void showTaskDialog({Task? task}) {
-    if (task != null) {
-      controller.text = task.title;
-    } 
+  void showTaskDialog({
+    required String dialogTitle, 
+    required String buttonText, 
+    String initialText = '', 
+    required void Function(String title) onSubmit,
+  }) {
+    controller.text = initialText;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(task == null ? 'Create Task' : 'Edit Task'),
+          title: Text(dialogTitle),
           content: TextField(
             controller: controller,
             decoration: InputDecoration(labelText: 'your task name'),
@@ -83,22 +86,13 @@ class _CalendarPageState extends State<CalendarPage> {
               onPressed: () {
                 if (controller.text.trim().isNotEmpty) {
                   setState(() {
-                    if (task == null) {
-                      tasks.add(
-                        Task(
-                          title: controller.text.trim(), 
-                          status: TaskStatus.notDone,
-                        )
-                      );
-                    } else {
-                      task.title = controller.text.trim();
-                    }
+                    onSubmit(controller.text.trim());
                   });
                   controller.clear();
                   Navigator.pop(context);
                 } 
               }, 
-              child: Text(task == null ? 'Add' : 'Save')
+              child: Text(buttonText)
             ),
           ],
         );
@@ -146,19 +140,62 @@ class _CalendarPageState extends State<CalendarPage> {
               });
             },
             onEdit: () {
-              showTaskDialog(task: task);
+              showTaskDialog(
+                dialogTitle: 'Edit Task', 
+                buttonText: 'Save', 
+                initialText: task.title,
+                onSubmit: (String title) {
+                  task.title = title;
+                },
+              );
             },
             onExpandTap: () {
               setState(() {
                 task.isExpanded = !task.isExpanded;
               });
             },
+            onAdd: () {
+              showTaskDialog(
+                dialogTitle: 'Add Subtask',
+                buttonText: 'Add',
+                onSubmit: (String title) {
+                  task.isExpanded = true;
+                  task.subtasks.add(
+                    Task(
+                      title: title, 
+                      status: TaskStatus.notDone,
+                    ),
+                  );
+                },
+              );
+            },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showTaskDialog();
+          showTaskDialog(
+            dialogTitle: 'Create Task',
+            buttonText: 'Add',
+            onSubmit: (String title) {
+              final Task newTask = Task(
+                title: title, 
+                status: TaskStatus.notDone,
+              );
+
+              if (focusedTask == null) {
+                tasks.add(newTask);
+              } else {
+                for (TaskEntry entry in entries) {
+                  if (entry.task == focusedTask) {
+                    final int index = entry.siblings.indexOf(focusedTask!);
+                    entry.siblings.insert(index + 1, newTask);
+                    break;
+                  }
+                }
+              }
+            },
+          );
         },
         child: Icon(Icons.add,),
       ),
