@@ -49,12 +49,30 @@ class _CalendarPageState extends State<CalendarPage> {
   }
 
   void addVisibleTasks(List<Task> list, int depth, List<TaskEntry> result) {
-    for (Task task in list) {
+    for (Task task in list.where((task) => task.status != TaskStatus.done)) {
       result.add(TaskEntry(task: task, depth: depth, siblings: list));
       if (task.isExpanded) {
         addVisibleTasks(task.subtasks, depth + 1, result);
       }
     }
+    for (Task task in list.where((task) => task.status == TaskStatus.done)) {
+      result.add(TaskEntry(task: task, depth: depth, siblings: list));
+      if (task.isExpanded) {
+        addVisibleTasks(task.subtasks, depth + 1, result);
+      }
+    }
+  }
+
+  bool containsTask(Task parent, Task target) {
+    for (Task child in parent.subtasks) {
+      if (child == target) {
+        return true;
+      }
+      if (containsTask(child, target)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void showTaskDialog({
@@ -109,12 +127,12 @@ class _CalendarPageState extends State<CalendarPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Today')),
       body: ListView.builder(
-        padding: EdgeInsets.only(bottom: 50),
+        padding: const EdgeInsets.only(bottom: 50),
         itemCount: entries.length,
         itemBuilder: (BuildContext context, int index) {
           final TaskEntry entry = entries[index];
           final Task task = entry.task;
-          return TaskRow(
+          final TaskRow row = TaskRow(
             key: ValueKey(task),
             task: task,
             isFocused: task == focusedTask,
@@ -169,6 +187,46 @@ class _CalendarPageState extends State<CalendarPage> {
                 },
               );
             },
+          );
+
+          return DragTarget<TaskEntry>(
+            key: ValueKey(task),
+            onWillAcceptWithDetails: (details) {
+              return details.data.task != task && !containsTask(details.data.task, task);
+            },
+            onAcceptWithDetails: (details) {
+              setState(() {
+                final TaskEntry dragged = details.data;
+                dragged.siblings.remove(dragged.task);
+                task.isExpanded = true;
+                task.subtasks.add(dragged.task);
+              });
+            },
+            builder: (context, candidateData, rejectedData) {
+              return Container(
+                color: candidateData.isNotEmpty ? Colors.green.shade100 : Colors.transparent,
+                child: LongPressDraggable<TaskEntry>(
+                  data: entry,
+                  delay: Duration.zero,
+                  feedback: Material(
+                    child: Container(
+                      width: 300,
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        task.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  childWhenDragging: Container(
+                    color: Colors.grey.shade300,
+                    child: row,
+                  ),
+                  child: row,
+                ),
+              );
+            }
           );
         },
       ),
