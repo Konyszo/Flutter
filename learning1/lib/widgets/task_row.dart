@@ -14,7 +14,7 @@ class TaskRow extends StatelessWidget {
     required this.onStatusTap,
     required this.onEdit,
     required this.onExpandTap,
-    required this.onAdd
+    required this.onAdd,
   });
 
   final Task task;
