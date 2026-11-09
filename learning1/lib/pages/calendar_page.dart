@@ -5,7 +5,7 @@ import '../widgets/task_row.dart';
 
 
 class CalendarPage extends StatefulWidget {
-  CalendarPage({super.key});
+  const CalendarPage({super.key});
 
   @override
   State<CalendarPage> createState() => _CalendarPageState();
